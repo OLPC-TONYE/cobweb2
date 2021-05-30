@@ -83,7 +83,7 @@ public class CobwebXmlHelper {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setIgnoringElementContentWhitespace(true);
 		factory.setIgnoringComments(true);
-		factory.setValidating(true);
+		factory.setValidating(false); // We have no DTD or XML schema for our config files
 
 		Document document;
 		try {

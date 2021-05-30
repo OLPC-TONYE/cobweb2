@@ -14,8 +14,7 @@ import org.cobweb.cobweb2.impl.ComplexEnvironment;
 import org.cobweb.cobweb2.plugins.AgentState;
 import org.cobweb.cobweb2.plugins.EnvironmentMutator;
 import org.cobweb.cobweb2.plugins.MoveMutator;
-
-import javafx.util.Pair;
+import org.cobweb.util.Pair;
 
 public class GravityMutator implements MoveMutator, EnvironmentMutator {
 

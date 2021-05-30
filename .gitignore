@@ -22,3 +22,5 @@ dependency-reduced-pom.xml
 /.idea
 todo.md
 src/main/java/META-INF/
+
+.DS_Store
