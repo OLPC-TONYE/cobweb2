@@ -177,6 +177,7 @@ public class CobwebApplicationRunner {
 		}
 
 		//System.out.println("inputFileName: " + inputFileName + ", java.io.tmpdir: " + System.getProperty("java.io.tmpdir") + ", file.separator: " + System.getProperty("file.separator"));
+		System.out.println("Temp Config File: " + inputFileName);
 
 		Cobweb2Serializer serializer = new Cobweb2Serializer();
 		SimulationConfig defaultconf = null;
@@ -196,9 +197,19 @@ public class CobwebApplicationRunner {
 			}
 		} catch (Exception e) {
 			String message = "Cannot load " + inputFileName + "";
+
+			File inputFile = new File(inputFileName);
+
+			if(inputFile.exists() && inputFile.length() == 0)
+			{
+				if(inputFile.delete())
+					message = message + " (Deleted empty config file. Please restart cobweb.)";
+			} // if(inputFile.exists() && inputFile.length() == 0)
+
 			if (visible) {
 				throw new UserInputException(message, e);
 			} else {
+
 				System.err.println(message);
 				throw new RuntimeException(e);
 			}
