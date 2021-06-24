@@ -47,6 +47,13 @@ public class ComplexAgentParams implements ResizableParam {
 	public MutatableFloat agentFoodEnergy = new MutatableFloat(1);
 
 	/**
+	 * Enable aggressive mode.
+	 */
+	@ConfDisplayName("Aggressive")
+	@ConfXMLTag("aggressiveMode")
+	public boolean aggressiveMode = false;
+
+	/**
 	 * Amount of energy used to breed.
 	 */
 	@ConfDisplayName("Breed energy")
@@ -235,12 +242,12 @@ public class ComplexAgentParams implements ResizableParam {
 	 * The probability of giving birth to an agent of "possible child type"
 	 * e.g. if probGiveBirthToOtherType = 0.8, then prob. of giving birth to
 	 * "possible child type" is 0.8, the prob. of giving birth to this agent type
-     	 * is 0.1, the prob. of giving birth to its partner type is 0.1.
+	 * is 0.1, the prob. of giving birth to its partner type is 0.1.
 	 */
 	@ConfDisplayName("Probability of giving birth to child")
 	@ConfXMLTag("ProbGiveBirthToOtherType")
 	public MutatableFloat probGiveBirthToOtherType = new MutatableFloat(0);
-	 
+
 	/**
 	 * Agent speed.
 	 */
