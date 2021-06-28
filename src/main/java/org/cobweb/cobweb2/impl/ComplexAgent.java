@@ -244,8 +244,13 @@ public class ComplexAgent extends Agent {
 	protected boolean canEat(ComplexAgent adjacentAgent) {
 		boolean caneat = false;
 		caneat = params.foodweb.canEatAgent[adjacentAgent.getType()];
-		if (enoughEnergy(params.breedEnergy.getValue()))
-			caneat = false;
+
+		// Make predators aggressive if aggressiveMode is checked
+		if (!params.aggressiveMode) {
+			if (enoughEnergy(params.breedEnergy.getValue()))
+				caneat = false;
+		}
+
 
 		return caneat;
 	}
