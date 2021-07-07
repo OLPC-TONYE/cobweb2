@@ -6,32 +6,32 @@ import org.cobweb.io.ConfXMLTag;
 
 public class Island extends AbioticFactor {
 
-	@ConfXMLTag("center")
 	@ConfDisplayName("Island value")
+	@ConfXMLTag("center")
 	public float islandValue = 1f;
 
-	@ConfXMLTag("outside")
 	@ConfDisplayName("Outside value")
+	@ConfXMLTag("outside")
 	public float outsideValue = 0f;
 
-	@ConfXMLTag("sizeX")
 	@ConfDisplayName("Island size X")
+	@ConfXMLTag("sizeX")
 	public float sizeX = 0.5f;
 
-	@ConfXMLTag("sizeY")
 	@ConfDisplayName("Island size Y")
+	@ConfXMLTag("sizeY")
 	public float sizeY = 0.5f;
 
-	@ConfXMLTag("positionX")
 	@ConfDisplayName("Position X")
+	@ConfXMLTag("positionX")
 	public float positionX = 0.4f;
 
-	@ConfXMLTag("positionY")
 	@ConfDisplayName("Position Y")
+	@ConfXMLTag("positionY")
 	public float positionY = 0.5f;
 
-	@ConfXMLTag("transition")
 	@ConfDisplayName("Edge hardness")
+	@ConfXMLTag("transition")
 	public float transition = 0.3f;
 
 	@Override

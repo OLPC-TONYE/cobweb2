@@ -199,6 +199,8 @@ public class CobwebApplication extends JFrame {
 		foodMenu = new JMenu("Select Food");
 		editMenu.add(new JMenuItem(setObservationMode));
 		editMenu.add(new JMenuItem(setModeStones));
+		// TODO: Add a new JMenuItem(giveVaccine)
+		editMenu.add(new JMenuItem(giveVaccine));
 		editMenu.add(agentMenu);
 		editMenu.add(foodMenu);
 		editMenu.add(new JSeparator());
@@ -926,6 +928,15 @@ public class CobwebApplication extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			simulatorUI.displayPanel.setMouseMode(MouseMode.AddStone);
+		}
+		private static final long serialVersionUID = 1L;
+	};
+
+	// TODO: newly added feature related to give vaccine
+	private Action giveVaccine = new AbstractAction("Give Vaccine") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			simulatorUI.displayPanel.setMouseMode(MouseMode.GiveVaccine);
 		}
 		private static final long serialVersionUID = 1L;
 	};

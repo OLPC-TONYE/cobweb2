@@ -647,8 +647,6 @@ public class ComplexAgent extends Agent {
 
 		// if the agents are of the same type, check if they have enough
 		// resources to breed
-
-
 		if (adjacentAgent.getType() == getType() || adjacentAgent.getType() == (this.params.partnerType.getValue() - 1)) {
 
 			double sim = 0.0;
