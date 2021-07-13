@@ -29,11 +29,13 @@ class AgentDrawInfo {
 
 	private final java.awt.Color action;
 
+	private final java.awt.Color vaccinationColor;
+
 	/** Position in tile coordinates */
 	private final LocationDirection position;
 
 	AgentDrawInfo(ComplexAgent agent, ColorLookup colorMap, Simulation sim) {
-		int[] rgb = new int[3];
+		int[] rgb = new int[3]; // This is used to decide agentColor
 
 		GeneticCode genes = agent.getState(GeneticCode.class);
 		if (genes != null) {
@@ -44,8 +46,9 @@ class AgentDrawInfo {
 
 		DiseaseState sick = agent.getState(DiseaseState.class);
 		if (sick != null) {
-			if (sick.sick)
+			if (sick.sick) {
 				rgb[2] = 255;
+			}
 		}
 
 		ToxinState poisoned = agent.getState(ToxinState.class);
@@ -56,13 +59,27 @@ class AgentDrawInfo {
 
 		agentColor = new Color(rgb[0], rgb[1], rgb[2]);
 
-		type =  colorMap.getColor(agent.getType(), sim.getAgentTypeCount());
+		type = colorMap.getColor(agent.getType(), sim.getAgentTypeCount());
+
+		vaccinationColor = new Color(70, 255, 0);
 
 		position = agent.getPosition();
 
 		PDState pd = agent.getState(PDState.class);
 		PersonalityState pState = agent.getState(PersonalityState.class);
-		action = ((pd != null && pd.pdCheater) || (pState != null && pState.pdCheater)) ? Color.RED : Color.BLACK;
+
+		if (((pd != null && pd.pdCheater) || (pState != null && pState.pdCheater)) && (sick != null && sick.vaccinated)) {
+			action = Color.ORANGE;
+		}
+		else if ((pd != null && pd.pdCheater) || (pState != null && pState.pdCheater)) {
+			action = Color.RED;
+		}
+		else if (sick != null && sick.vaccinated) {
+			action = vaccinationColor;
+		}
+		else {
+			action = Color.BLACK;
+		}
 	}
 
 	public static Color getColorForType(int agent_type, ColorLookup colorMap, Simulation sim)

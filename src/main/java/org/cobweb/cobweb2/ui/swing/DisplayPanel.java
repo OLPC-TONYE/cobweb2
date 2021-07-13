@@ -19,6 +19,7 @@ import org.cobweb.cobweb2.core.Agent;
 import org.cobweb.cobweb2.core.Location;
 import org.cobweb.cobweb2.impl.ComplexAgent;
 import org.cobweb.cobweb2.plugins.abiotic.AbioticMutator;
+import org.cobweb.cobweb2.plugins.disease.DiseaseMutator;
 import org.cobweb.cobweb2.ui.swing.config.DisplaySettings;
 import org.cobweb.swingutil.WaitableJComponent;
 
@@ -220,6 +221,52 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 
 	}
 
+	private class VaccineMouseListener extends Mouse {
+		DiseaseMutator localDiseaseMutator = simulation.diseaseMutator;
+
+		@Override
+		public boolean canClick(Location loc) {
+			return simulation.theEnvironment.hasAgent(loc);
+		}
+
+		@Override
+		boolean canSetOn(Location loc) {
+			Agent localAgent = simulation.theEnvironment.getAgent(loc);
+			return simulation.theEnvironment.hasAgent(loc) && !localDiseaseMutator.isVaccinated(localAgent) && !localDiseaseMutator.isSick(localAgent);
+		}
+
+		@Override
+		boolean canSetOff(Location loc) {
+			Agent localAgent = simulation.theEnvironment.getAgent(loc);
+			return simulation.theEnvironment.hasAgent(loc) && localDiseaseMutator.isVaccinated(localAgent) ;
+		}
+
+		@Override
+		void setOn(Location loc) {
+			giveVaccine(loc);
+		}
+
+		@Override
+		void setOff(Location loc) {
+			removeVaccine(loc);
+
+		}
+
+
+		private void giveVaccine(Location loc) {
+			Agent localAgent = simulation.theEnvironment.getAgent(loc);
+			float effectiveness = localDiseaseMutator.params.agentParams[localAgent.getType()].vaccineEffectiveness;
+			localDiseaseMutator.vaccinate(localAgent, effectiveness);
+		}
+
+		private void removeVaccine(Location loc) {
+			Agent localAgent = simulation.theEnvironment.getAgent(loc);
+			localDiseaseMutator.deVaccinate(localAgent);
+		}
+	}
+
+
+
 	private class AgentMouseListener extends Mouse {
 
 		private int mytype;
@@ -387,7 +434,7 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 						);
 			} catch (NullPointerException ex) {
 				// FIXME find out what crashes here sometimes
-				// Crash is OK for now, updateScale gets invoked agian and fixes everything
+				// Crash is OK for now, updateScale gets invoked again and fixes everything
 			}
 			drawInfo = new DrawInfo(simulation, observedAgents, displaySettings, overlays.values());
 		}
@@ -415,6 +462,9 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 				break;
 			case Observe:
 				setMouse(new ObserveMouseListener());
+				break;
+			case GiveVaccine:
+				setMouse(new VaccineMouseListener());
 				break;
 			default:
 				break;

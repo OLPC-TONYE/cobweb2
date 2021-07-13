@@ -70,7 +70,7 @@ public class Simulation implements SimulationInternals, SimulationInterface {
 	public ProductionMapper prodMapper;
 	private AbioticMutator abioticMutator;
 	private SwarmMutator swarmMutator;
-	private DiseaseMutator diseaseMutator;
+	public DiseaseMutator diseaseMutator;
 	private FusionMutator fusionMutator;
 	private ToxinMutator toxinMutator;
 	public GeneticsMutator geneticMutator;

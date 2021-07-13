@@ -50,7 +50,7 @@ class DrawInfo {
 	Simulation sim;
 
 	/**
-	 * Construct a DrawInfo width specific width, height and tile colors.
+	 * Construct a DrawInfo with specific width, height and tile colors.
 	 * The tiles array is not copied; the caller is assumed to "give" the
 	 * array to the drawing info, and not keep any local references around.
 	 */
