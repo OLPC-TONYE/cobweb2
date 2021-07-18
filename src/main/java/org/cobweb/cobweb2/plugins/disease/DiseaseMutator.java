@@ -21,7 +21,7 @@ import org.cobweb.util.ArrayUtilities;
  */
 public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements ContactMutator, SpawnMutator, LoggingMutator, UpdateMutator {
 
-	private DiseaseParams params;
+	public DiseaseParams params;
 
 	private int sickCount[] = new int[0];
 
@@ -77,6 +77,26 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 			setAgentState(agent, new DiseaseState(agentParams, true, false, simulation.getTime()));
 		}
 
+	}
+
+	private void contactTransmit(Agent agent, float rate) {
+		boolean isSick = false;
+		if (simulation.getRandom().nextFloat() < rate)
+			isSick = true;
+
+		if (isSick) {
+			DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
+			agentParams.param.modifyValue(this, agent, agentParams.factor);
+
+			sickCount[agent.getType()]++;
+
+			if (isVaccinated(agent)) {
+				setAgentState(agent, new DiseaseState(agentParams, true, true, simulation.getTime()));
+			}
+			else {
+				setAgentState(agent, new DiseaseState(agentParams, true, false, simulation.getTime()));
+			}
+		}
 	}
 
 	@Override
@@ -144,7 +164,7 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 			return;
 
 		if (params.agentParams[tr].transmitTo[te]) {
-			makeRandomSick(bumpee, params.agentParams[te].contactTransmitRate);
+			contactTransmit(bumpee, params.agentParams[te].contactTransmitRate);
 		}
 	}
 
@@ -157,13 +177,18 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 		return hasAgentState(agent) && getAgentState(agent).sick;
 	}
 
-	private boolean isVaccinated(Agent agent) {
+	public boolean isVaccinated(Agent agent) {
 		return hasAgentState(agent) && getAgentState(agent).vaccinated;
 	}
 
-	private void vaccinate(Agent bumpee, float effectiveness) {
+	public void vaccinate(Agent bumpee, float effectiveness) {
 		DiseaseAgentParams agentParams = params.agentParams[bumpee.getType()];
 		setAgentState(bumpee, new DiseaseState(agentParams, false, true, effectiveness));
+	}
+
+	public void deVaccinate(Agent bumpee) {
+		DiseaseAgentParams agentParams = params.agentParams[bumpee.getType()];
+		setAgentState(bumpee, new DiseaseState(agentParams, false, false, 0.0f));
 	}
 
 	@Override
