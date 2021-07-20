@@ -79,7 +79,7 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 
 	}
 
-	private void contactTransmit(Agent agent, float rate) {
+	public void contactTransmit(Agent agent, float rate) {
 		boolean isSick = false;
 		if (simulation.getRandom().nextFloat() < rate)
 			isSick = true;
@@ -168,7 +168,7 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 		}
 	}
 
-	private void unSick(Agent agent) {
+	public void unSick(Agent agent) {
 		removeAgentState(agent);
 		sickCount[agent.getType()]--;
 	}
@@ -186,9 +186,24 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 		setAgentState(bumpee, new DiseaseState(agentParams, false, true, effectiveness));
 	}
 
+	public void vaccinate(Agent bumpee) {
+		DiseaseAgentParams agentParams = params.agentParams[bumpee.getType()];
+		setAgentState(bumpee, new DiseaseState(agentParams, false, true, agentParams.vaccineEffectiveness));
+	}
+
 	public void deVaccinate(Agent bumpee) {
 		DiseaseAgentParams agentParams = params.agentParams[bumpee.getType()];
 		setAgentState(bumpee, new DiseaseState(agentParams, false, false, 0.0f));
+	}
+
+	public void heal(Agent agent) {
+		if (isVaccinated(agent)) {
+			DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
+			setAgentState(agent, new DiseaseState(agentParams, false, true, agentParams.vaccineEffectiveness));
+			sickCount[agent.getType()]--;
+		} else {
+			unSick(agent);
+		}
 	}
 
 	@Override

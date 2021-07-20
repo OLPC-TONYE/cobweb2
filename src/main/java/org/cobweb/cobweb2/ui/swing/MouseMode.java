@@ -1,5 +1,5 @@
 package org.cobweb.cobweb2.ui.swing;
 
 public enum MouseMode {
-	Observe, AddStone, AddFood, AddAgent, GiveVaccine
+	Observe, AddStone, AddFood, AddAgent, ControlDisease
 }
