@@ -21,6 +21,13 @@ public class DiseaseAgentParams implements ResizableParam {
 	public float initialInfection = 0;
 
 	/**
+	 * Fraction of initially vaccinated agents.
+	 */
+	@ConfXMLTag("initialVaccination")
+	@ConfDisplayName("Initially vaccinated fraction")
+	public float initialVaccination = 0;
+
+	/**
 	 * Chance this agent will get a disease from contact with an infected agent.
 	 */
 	@ConfXMLTag("contactTransmitRate")

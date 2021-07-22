@@ -79,6 +79,18 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 
 	}
 
+	private void makeRandomVaccinated(Agent agent, float rate) {
+		boolean isVaccinated = false;
+		if (simulation.getRandom().nextFloat() < rate) {
+			isVaccinated = true;
+		}
+		if (isVaccinated) {
+			DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
+			setAgentState(agent, new DiseaseState(agentParams, false, true, agentParams.vaccineEffectiveness));
+		}
+	}
+
+
 	public void contactTransmit(Agent agent, float rate) {
 		boolean isSick = false;
 		if (simulation.getRandom().nextFloat() < rate)
@@ -114,7 +126,10 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 
 	@Override
 	public void onSpawn(Agent agent) {
-		makeRandomSick(agent, params.agentParams[agent.getType()].initialInfection);
+		makeRandomVaccinated(agent, params.agentParams[agent.getType()].initialVaccination);
+		if (!isVaccinated(agent)) {
+			makeRandomSick(agent, params.agentParams[agent.getType()].initialInfection);
+		}
 	}
 
 	@Override
