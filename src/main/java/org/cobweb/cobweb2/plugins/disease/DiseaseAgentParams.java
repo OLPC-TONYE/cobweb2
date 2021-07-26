@@ -79,7 +79,7 @@ public class DiseaseAgentParams implements ResizableParam {
 	/**
 	 * Agent types this agent type can transmit the disease to.
 	 */
-	@ConfDisplayName("Transmit to")
+	@ConfDisplayName("Transmit to Agent")
 	@ConfXMLTag("transmitTo")
 	@ConfList(indexName = "Agent", startAtOne = true)
 	public boolean[] transmitTo = new boolean[0];
@@ -87,7 +87,7 @@ public class DiseaseAgentParams implements ResizableParam {
 	/**
 	 * Agent types this agent type can heal.
 	 */
-	@ConfDisplayName("Heal")
+	@ConfDisplayName("Heal Agent")
 	@ConfXMLTag("heal")
 	@ConfList(indexName = "Agent", startAtOne = true)
 	public boolean[] canHeal = new boolean[0];
@@ -95,7 +95,7 @@ public class DiseaseAgentParams implements ResizableParam {
 	/**
 	 * Agent types this agent type can vaccinate.
 	 */
-	@ConfDisplayName("Vaccinate")
+	@ConfDisplayName("Vaccinate Agent")
 	@ConfXMLTag("vaccinate")
 	@ConfList(indexName = "Agent", startAtOne = true)
 	public boolean[] canVaccinate = new boolean[0];
