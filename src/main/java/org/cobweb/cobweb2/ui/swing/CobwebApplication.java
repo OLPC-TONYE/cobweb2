@@ -70,6 +70,8 @@ public class CobwebApplication extends JFrame {
 
 	private SimulatorUI simulatorUI;
 
+	private JMenu diseaseMenu;
+
 	private JMenu foodMenu;
 
 	private JMenu agentMenu;
@@ -197,9 +199,11 @@ public class CobwebApplication extends JFrame {
 		// Sub-menus created dynamically in #makeAgentFoodSelectMenu()
 		agentMenu = new JMenu("Select Agents");
 		foodMenu = new JMenu("Select Food");
+		diseaseMenu = new JMenu("Disease");
 		editMenu.add(new JMenuItem(setObservationMode));
 		editMenu.add(new JMenuItem(setModeStones));
-		editMenu.add(new JMenuItem(setVaccinateMode));
+		//		editMenu.add(new JMenuItem(setVaccinateMode));
+		editMenu.add(diseaseMenu);
 		editMenu.add(agentMenu);
 		editMenu.add(foodMenu);
 		editMenu.add(new JSeparator());
@@ -520,6 +524,8 @@ public class CobwebApplication extends JFrame {
 
 		makeViewMenu();
 
+		makeDiseaseMenu();
+
 		if (simulatorUI != null)
 			simulatorUI.simulationChanged(continuation);
 
@@ -588,6 +594,59 @@ public class CobwebApplication extends JFrame {
 			viewMenu.add(box);
 		}
 	}
+
+
+	private void makeDiseaseMenu() {
+		JMenuItem diseaseSubmenu[] = new JMenuItem[3];
+		diseaseMenu.removeAll();
+		String diseaseSubmenuActions[] = {"Vaccinate", "Heal", "Infect"};
+		for (int i = 0; i < 3; i++) {
+			diseaseSubmenu[i] = new JMenuItem(diseaseSubmenuActions[i]);
+			diseaseSubmenu[i].setActionCommand(diseaseSubmenuActions[i]);
+			diseaseSubmenu[i].addActionListener(new DiseaseMouseActionListener(diseaseSubmenuActions[i]));
+			diseaseMenu.add(diseaseSubmenu[i]);
+		}
+
+	}
+
+	private class DiseaseMouseActionListener implements ActionListener {
+
+		private final String type;
+
+		public DiseaseMouseActionListener(String type) {
+			this.type = type;
+
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			simulatorUI.displayPanel.setMouseMode(MouseMode.ControlDisease, type);
+		}
+	}
+
+	//	private Action setVaccinateMode = new AbstractAction("Vaccinate") {
+	//		@Override
+	//		public void actionPerformed(ActionEvent e) {
+	//			simulatorUI.displayPanel.setMouseMode(MouseMode.Vaccinate);
+	//		}
+	//		private static final long serialVersionUID = 1L;
+	//	};
+	//
+	//	private Action setHealMode = new AbstractAction("Heal") {
+	//		@Override
+	//		public void actionPerformed(ActionEvent e) {
+	//			simulatorUI.displayPanel.setMouseMode(MouseMode.Heal);
+	//		}
+	//		private static final long serialVersionUID = 1L;
+	//	};
+	//
+	//	private Action setInfectionMode = new AbstractAction("Infect") {
+	//		@Override
+	//		public void actionPerformed(ActionEvent e) {
+	//			simulatorUI.displayPanel.setMouseMode(MouseMode.Infect);
+	//		}
+	//		private static final long serialVersionUID = 1L;
+	//	};
 
 	private void makeAgentFoodSelectMenu() {
 		JMenuItem foodtype[] = new JMenuItem[simRunner.getSimulation().getAgentTypeCount()];
@@ -931,13 +990,6 @@ public class CobwebApplication extends JFrame {
 		private static final long serialVersionUID = 1L;
 	};
 
-	private Action setVaccinateMode = new AbstractAction("Vaccinate") {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			simulatorUI.displayPanel.setMouseMode(MouseMode.GiveVaccine);
-		}
-		private static final long serialVersionUID = 1L;
-	};
 
 	private enum ReplaceMergeCancel {
 		CANCEL,

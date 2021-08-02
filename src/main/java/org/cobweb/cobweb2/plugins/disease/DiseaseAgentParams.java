@@ -21,6 +21,13 @@ public class DiseaseAgentParams implements ResizableParam {
 	public float initialInfection = 0;
 
 	/**
+	 * Fraction of initially vaccinated agents.
+	 */
+	@ConfXMLTag("initialVaccination")
+	@ConfDisplayName("Initially vaccinated fraction")
+	public float initialVaccination = 0;
+
+	/**
 	 * Chance this agent will get a disease from contact with an infected agent.
 	 */
 	@ConfXMLTag("contactTransmitRate")
@@ -70,12 +77,28 @@ public class DiseaseAgentParams implements ResizableParam {
 	public int recoveryTime = 0;
 
 	/**
-	 * Agent types this agent can transmit the disease to.
+	 * Agent types this agent type can transmit the disease to.
 	 */
-	@ConfDisplayName("Transmit to")
+	@ConfDisplayName("Transmit to Agent")
 	@ConfXMLTag("transmitTo")
 	@ConfList(indexName = "Agent", startAtOne = true)
 	public boolean[] transmitTo = new boolean[0];
+
+	/**
+	 * Agent types this agent type can heal.
+	 */
+	@ConfDisplayName("Heal Agent")
+	@ConfXMLTag("heal")
+	@ConfList(indexName = "Agent", startAtOne = true)
+	public boolean[] canHeal = new boolean[0];
+
+	/**
+	 * Agent types this agent type can vaccinate.
+	 */
+	@ConfDisplayName("Vaccinate Agent")
+	@ConfXMLTag("vaccinate")
+	@ConfList(indexName = "Agent", startAtOne = true)
+	public boolean[] canVaccinate = new boolean[0];
 
 	@Deprecated // for reflection use only!
 	public DiseaseAgentParams(){
@@ -89,6 +112,10 @@ public class DiseaseAgentParams implements ResizableParam {
 	public void resize(AgentFoodCountable size) {
 		boolean[] n = Arrays.copyOf(transmitTo, size.getAgentTypes());
 		this.transmitTo = n;
+		boolean[] m = Arrays.copyOf(canHeal, size.getAgentTypes());
+		this.canHeal = m;
+		boolean[] o = Arrays.copyOf(canVaccinate, size.getAgentTypes());
+		this.canVaccinate = o;
 	}
 
 	private static final long serialVersionUID = 2L;

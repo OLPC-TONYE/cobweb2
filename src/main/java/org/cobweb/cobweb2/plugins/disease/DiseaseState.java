@@ -39,6 +39,7 @@ public class DiseaseState implements AgentState {
 		this.vaccineEffectiveness = vaccineEffectiveness;
 	}
 
+
 	@Override
 	public boolean isTransient() {
 		return false;

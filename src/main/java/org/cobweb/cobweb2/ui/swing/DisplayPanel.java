@@ -221,7 +221,19 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 
 	}
 
-	private class VaccineMouseListener extends Mouse {
+
+	private class DiseaseMouseListener extends Mouse {
+
+		private String myType;
+		private final String VACCINATE = "Vaccinate";
+		private final String HEAL= "Heal";
+		private final String INFECT = "Infect";
+
+
+		public DiseaseMouseListener(String myType) {
+			this.myType = myType;
+		}
+
 		DiseaseMutator localDiseaseMutator = simulation.diseaseMutator;
 
 		@Override
@@ -229,29 +241,65 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 			return simulation.theEnvironment.hasAgent(loc);
 		}
 
+		//FIXME: When agent is sick and vaccinated, the canSetOn of HEAL is true and the canSetOff of HEAL is also true.
+		//       Need to fix the conditions
 		@Override
 		boolean canSetOn(Location loc) {
 			Agent localAgent = simulation.theEnvironment.getAgent(loc);
-			return simulation.theEnvironment.hasAgent(loc) && !localDiseaseMutator.isVaccinated(localAgent) && !localDiseaseMutator.isSick(localAgent);
+
+			switch(myType) {
+				case VACCINATE:
+					return simulation.theEnvironment.hasAgent(loc) && !localDiseaseMutator.isVaccinated(localAgent) && !localDiseaseMutator.isSick(localAgent);
+				case HEAL:
+					return simulation.theEnvironment.hasAgent(loc) && localDiseaseMutator.isSick(localAgent);
+				case INFECT:
+					return simulation.theEnvironment.hasAgent(loc) && !localDiseaseMutator.isSick(localAgent);
+				default:
+					return false;
+			}
+
 		}
 
 		@Override
 		boolean canSetOff(Location loc) {
 			Agent localAgent = simulation.theEnvironment.getAgent(loc);
-			return simulation.theEnvironment.hasAgent(loc) && localDiseaseMutator.isVaccinated(localAgent) ;
+			if (myType == VACCINATE) {
+				return simulation.theEnvironment.hasAgent(loc) && localDiseaseMutator.isVaccinated(localAgent) ;
+			} else {
+				// HEAL and INFECT shouldn't be able to be set off
+				// because set Off HEAL basically means setting on INFECT, and vice versa
+				return false;
+			}
+
 		}
 
 		@Override
 		void setOn(Location loc) {
-			giveVaccine(loc);
+			switch(myType) {
+				case VACCINATE:
+					giveVaccine(loc);
+					break;
+				case HEAL:
+					heal(loc);
+					break;
+				case INFECT:
+					infect(loc);
+					break;
+				default:
+					break;
+			}
+
 		}
 
 		@Override
 		void setOff(Location loc) {
-			removeVaccine(loc);
+			if (myType == VACCINATE) {
+				removeVaccine(loc);
+			} else {
+				return;
+			}
 
 		}
-
 
 		private void giveVaccine(Location loc) {
 			Agent localAgent = simulation.theEnvironment.getAgent(loc);
@@ -262,6 +310,16 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 		private void removeVaccine(Location loc) {
 			Agent localAgent = simulation.theEnvironment.getAgent(loc);
 			localDiseaseMutator.deVaccinate(localAgent);
+		}
+
+		private void heal(Location loc) {
+			Agent localAgent = simulation.theEnvironment.getAgent(loc);
+			localDiseaseMutator.heal(localAgent);
+		}
+
+		private void infect(Location loc) {
+			Agent localAgent = simulation.theEnvironment.getAgent(loc);
+			localDiseaseMutator.contactTransmit(localAgent, 1);
 		}
 	}
 
@@ -463,8 +521,15 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 			case Observe:
 				setMouse(new ObserveMouseListener());
 				break;
-			case GiveVaccine:
-				setMouse(new VaccineMouseListener());
+			default:
+				break;
+		}
+	}
+
+	public void setMouseMode(MouseMode mode, String type) {
+		switch (mode) {
+			case ControlDisease:
+				setMouse(new DiseaseMouseListener(type));
 				break;
 			default:
 				break;
