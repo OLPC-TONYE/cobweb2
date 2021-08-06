@@ -57,9 +57,7 @@ public class PacketConduit implements EnvironmentMutator {
 		currentPackets.clear();
 	}
 
-	public BroadcastPacket findPacket(Location position, ComplexAgent receiver) {
-		// TODO: return more than 1 packet?
-		// TODO: return closest packet?
+	public BroadcastPacket findBreedPacket(Location position, ComplexAgent receiver) {
 		for (BroadcastPacket commPacket : currentPackets) {
 			double distance = topology.getDistance(position, commPacket.location);
 			ComplexAgent s = commPacket.sender;
@@ -68,17 +66,30 @@ public class PacketConduit implements EnvironmentMutator {
 					&& distance < commPacket.breedRange
 					&& !s.equals(receiver)
 					&& (receiver.getType() == s.getType())
-					&& (s.params.breedSimMin.getValue() == 0f || s.calculateSimilarity(receiver) >= s.params.breedSimMin.getValue())) {
-				return commPacket;
-			}
-
-
-			if (distance < commPacket.range
-					&& !s.equals(receiver)
-					&& (!s.params.broadcastSameTypeOnly || receiver.getType() == s.getType())
-					&& (s.params.broadcastMinSimilarity.getValue() == 0f || s.calculateSimilarity(receiver) >= s.params.broadcastMinSimilarity.getValue())
+					&& (s.params.breedSimMin.getValue() == 0f || s.calculateSimilarity(receiver) >= s.params.breedSimMin.getValue())
 					) {
 				return commPacket;
+			}
+		}
+		return null;
+	}
+
+	public BroadcastPacket findPacket(Location position, ComplexAgent receiver) {
+		// TODO: return more than 1 packet?
+		// TODO: return closest packet?
+		for (BroadcastPacket commPacket : currentPackets) {
+			double distance = topology.getDistance(position, commPacket.location);
+			ComplexAgent s = commPacket.sender;
+
+			if (commPacket.getClass() != EnthusiasticBroadcast.class) {
+				if (distance < commPacket.range
+						&& !s.equals(receiver)
+						&& (!s.params.broadcastSameTypeOnly || receiver.getType() == s.getType())
+						&& (s.params.broadcastMinSimilarity.getValue() == 0f || s.calculateSimilarity(receiver) >= s.params.broadcastMinSimilarity.getValue())
+						) {
+					return commPacket;
+				}
+
 			}
 		}
 		return null;

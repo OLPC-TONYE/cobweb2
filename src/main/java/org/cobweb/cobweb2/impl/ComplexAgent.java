@@ -431,6 +431,17 @@ public class ComplexAgent extends Agent {
 			commPacket.process(this);
 		}
 	}
+	
+	protected void receiveBreedBroadcast() {
+		BroadcastPacket commPacket = environment.getPlugin(PacketConduit.class).findBreedPacket(getPosition(), this);
+
+		if (commPacket == null)
+			return;
+
+		if (isAgentGood(commPacket.sender)) {
+			commPacket.process(this);
+		}
+	}
 
 	public void setShouldReproduceAsex(boolean asexFlag) {
 		this.shouldReproduceAsex = asexFlag;
@@ -704,8 +715,10 @@ public class ComplexAgent extends Agent {
 		}
 
 		/* Check if broadcasting is enabled */
-		if (params.broadcastMode || params.enthusiasticMode)
+		if (params.broadcastMode)
 			receiveBroadcast();
+		if (params.enthusiasticMode) 
+			receiveBreedBroadcast();
 
 		if(params.agentMovementSpeed.getValue() == 1f)
 			makeAMove(); // just perform the original movement.

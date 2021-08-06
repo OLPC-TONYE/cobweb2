@@ -49,14 +49,14 @@ public class ComplexAgentParams implements ResizableParam {
 	/**
 	 * Enable aggressive mode.
 	 */
-	@ConfDisplayName("Aggressive")
+	@ConfDisplayName("Aggressive predator")
 	@ConfXMLTag("aggressiveMode")
 	public boolean aggressiveMode = false;
 
 	/**
 	 * Enable aggressive mode.
 	 */
-	@ConfDisplayName("Enthusiastic")
+	@ConfDisplayName("Enthusiastic breeder")
 	@ConfXMLTag("enthusiasticMode")
 	public boolean enthusiasticMode = false;
 
