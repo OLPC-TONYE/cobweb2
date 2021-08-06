@@ -160,11 +160,11 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 
 		if (params.agentParams[tr].vaccinator && !isSick(bumpee) && params.agentParams[tr].canVaccinate[te]) {
 			// the effectiveness is determined by the vaccinator agent type
-			// TODO: Maybe we can determine the effectiveness by the vaccinated agent types
+			// maybe we can determine the effectiveness by the vaccinated agent types
 			vaccinate(bumpee, params.agentParams[tr].vaccineEffectiveness);
 		}
 
-		// Modify the logics here to not remove vaccination after being healed
+		// TODO: Modify the logics here to not remove vaccination after being healed
 		if (params.agentParams[tr].healer && isSick(bumpee) && params.agentParams[tr].canHeal[te]) {
 			if (simulation.getRandom().nextFloat() < params.agentParams[tr].healerEffectiveness) {
 				heal(bumpee);

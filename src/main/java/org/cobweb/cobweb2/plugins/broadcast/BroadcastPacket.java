@@ -12,12 +12,19 @@ public abstract class BroadcastPacket {
 	// e.g. Food found at location 34,43
 	public final int range; // Reach over the whole environment or just a
 	// certain neighborhood
+	public final int breedRange;
 
 	public final Location location;
 
 	public BroadcastPacket(ComplexAgent dispatcherId) {
 		this.sender = dispatcherId;
 		this.location = dispatcherId.getPosition();
+
+
+		if (sender.params.enthusiasticEnergyBased)
+			this.breedRange = getRadius(sender.getEnergy());
+		else
+			this.breedRange = sender.params.enthusiasticFixedRange.getValue();
 
 		if (sender.params.broadcastEnergyBased)
 			this.range = getRadius(sender.getEnergy());
