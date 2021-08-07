@@ -228,7 +228,7 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 		private final String VACCINATE = "Vaccinate";
 		private final String HEAL= "Heal";
 		private final String INFECT = "Infect";
-		private final String TOGGLEPPE = "Give/Remove PPE";
+
 
 		public DiseaseMouseListener(String myType) {
 			this.myType = myType;
@@ -254,8 +254,6 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 					return simulation.theEnvironment.hasAgent(loc) && localDiseaseMutator.isSick(localAgent);
 				case INFECT:
 					return simulation.theEnvironment.hasAgent(loc) && !localDiseaseMutator.isSick(localAgent);
-				case TOGGLEPPE:
-					return simulation.theEnvironment.hasAgent(loc) && !localDiseaseMutator.isWearingPPE(localAgent);
 				default:
 					return false;
 			}
@@ -267,9 +265,7 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 			Agent localAgent = simulation.theEnvironment.getAgent(loc);
 			if (myType == VACCINATE) {
 				return simulation.theEnvironment.hasAgent(loc) && localDiseaseMutator.isVaccinated(localAgent) ;
-			}else if(myType == TOGGLEPPE) {
-				return simulation.theEnvironment.hasAgent(loc) && localDiseaseMutator.isWearingPPE(localAgent) ;
-			}else {
+			} else {
 				// HEAL and INFECT shouldn't be able to be set off
 				// because set Off HEAL basically means setting on INFECT, and vice versa
 				return false;
@@ -289,9 +285,6 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 				case INFECT:
 					infect(loc);
 					break;
-				case TOGGLEPPE:
-					givePPE(loc);
-					break;
 				default:
 					break;
 			}
@@ -302,8 +295,6 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 		void setOff(Location loc) {
 			if (myType == VACCINATE) {
 				removeVaccine(loc);
-			}else if (myType == TOGGLEPPE) {
-				removePPE(loc);
 			} else {
 				return;
 			}
@@ -329,16 +320,6 @@ public class DisplayPanel extends WaitableJComponent implements ComponentListene
 		private void infect(Location loc) {
 			Agent localAgent = simulation.theEnvironment.getAgent(loc);
 			localDiseaseMutator.contactTransmit(localAgent, 1);
-		}
-
-		private void givePPE(Location loc) {
-			Agent localAgent = simulation.theEnvironment.getAgent(loc);
-			localDiseaseMutator.equipPPE(localAgent);
-		}
-
-		private void removePPE(Location loc) {
-			Agent localAgent = simulation.theEnvironment.getAgent(loc);
-			localDiseaseMutator.removePPE(localAgent);
 		}
 	}
 

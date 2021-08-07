@@ -100,20 +100,6 @@ public class DiseaseAgentParams implements ResizableParam {
 	@ConfList(indexName = "Agent", startAtOne = true)
 	public boolean[] canVaccinate = new boolean[0];
 
-	/**
-	 * Checks if Agents is wearing PPE.
-	 */
-	@ConfXMLTag("wearingPPE")
-	@ConfDisplayName("Wearing PPE")
-	public boolean wearingPPE = false;
-
-	/**
-	 * Factor affecting chance this agent will get a disease from contact while using PPE.
-	 */
-	@ConfXMLTag("ppeEffectiveness")
-	@ConfDisplayName("PPE Effectiveness")
-	public float ppeEffectiveness = 1.0f;
-
 	@Deprecated // for reflection use only!
 	public DiseaseAgentParams(){
 	}

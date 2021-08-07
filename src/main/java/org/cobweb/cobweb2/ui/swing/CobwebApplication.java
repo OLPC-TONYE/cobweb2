@@ -597,10 +597,10 @@ public class CobwebApplication extends JFrame {
 
 
 	private void makeDiseaseMenu() {
-		JMenuItem diseaseSubmenu[] = new JMenuItem[4];
+		JMenuItem diseaseSubmenu[] = new JMenuItem[3];
 		diseaseMenu.removeAll();
-		String diseaseSubmenuActions[] = {"Vaccinate", "Heal", "Infect", "Give/Remove PPE"};
-		for (int i = 0; i < 4; i++) {
+		String diseaseSubmenuActions[] = {"Vaccinate", "Heal", "Infect"};
+		for (int i = 0; i < 3; i++) {
 			diseaseSubmenu[i] = new JMenuItem(diseaseSubmenuActions[i]);
 			diseaseSubmenu[i].setActionCommand(diseaseSubmenuActions[i]);
 			diseaseSubmenu[i].addActionListener(new DiseaseMouseActionListener(diseaseSubmenuActions[i]));
