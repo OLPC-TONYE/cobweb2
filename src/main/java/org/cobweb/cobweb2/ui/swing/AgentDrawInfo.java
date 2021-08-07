@@ -1,7 +1,9 @@
 package org.cobweb.cobweb2.ui.swing;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import org.cobweb.cobweb2.Simulation;
 import org.cobweb.cobweb2.core.LocationDirection;
@@ -34,6 +36,9 @@ class AgentDrawInfo {
 	/** Position in tile coordinates */
 	private final LocationDirection position;
 
+	/** If agent is wearing PPE */
+	private boolean isWearingPPE = false;
+
 	AgentDrawInfo(ComplexAgent agent, ColorLookup colorMap, Simulation sim) {
 		int[] rgb = new int[3]; // This is used to decide agentColor
 
@@ -48,6 +53,9 @@ class AgentDrawInfo {
 		if (sick != null) {
 			if (sick.sick) {
 				rgb[2] = 255;
+			}
+			if(sick.wearingPPE) {
+				isWearingPPE = sick.wearingPPE;
 			}
 		}
 
@@ -123,6 +131,17 @@ class AgentDrawInfo {
 				yPts[1] = centerY - position.direction.y * deltaY;
 				yPts[2] = yPts[1];
 			}
+
+
+			if(isWearingPPE) {
+				Graphics2D g2 = (Graphics2D) g;
+				g2.setStroke(new BasicStroke(2));
+				g2.setColor(Color.GREEN);
+				g2.drawRect(topLeftX, topLeftY, tileWidth, tileHeight);
+				g2.setStroke(new BasicStroke(1));
+			}
+
+			g.setColor(agentColor);
 			g.fillPolygon(xPts, yPts, 3);
 			g.setColor(type);
 			g.fillOval(topLeftX + tileWidth / 3, topLeftY + tileHeight / 3, tileWidth / 3 + 1, tileHeight / 3 + 1);
