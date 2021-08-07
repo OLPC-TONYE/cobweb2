@@ -30,7 +30,7 @@ public class PacketConduit implements EnvironmentMutator {
 	public void addPacketToList(BroadcastPacket packet) {
 		if (!broadcastBlocked)
 			currentPackets.add(packet);
-		// TODO: allow more brodcasts?
+		// TODO: allow more broadcasts?
 		blockBroadcast();
 	}
 
@@ -57,18 +57,39 @@ public class PacketConduit implements EnvironmentMutator {
 		currentPackets.clear();
 	}
 
+	public BroadcastPacket findBreedPacket(Location position, ComplexAgent receiver) {
+		for (BroadcastPacket commPacket : currentPackets) {
+			double distance = topology.getDistance(position, commPacket.location);
+			ComplexAgent s = commPacket.sender;
+
+			if (commPacket.getClass() == EnthusiasticBroadcast.class
+					&& distance < commPacket.breedRange
+					&& !s.equals(receiver)
+					&& (receiver.getType() == s.getType())
+					&& (s.params.breedSimMin.getValue() == 0f || s.calculateSimilarity(receiver) >= s.params.breedSimMin.getValue())
+					) {
+				return commPacket;
+			}
+		}
+		return null;
+	}
+
 	public BroadcastPacket findPacket(Location position, ComplexAgent receiver) {
 		// TODO: return more than 1 packet?
 		// TODO: return closest packet?
 		for (BroadcastPacket commPacket : currentPackets) {
 			double distance = topology.getDistance(position, commPacket.location);
 			ComplexAgent s = commPacket.sender;
-			if (distance < commPacket.range
-					&& !s.equals(receiver)
-					&& (!s.params.broadcastSameTypeOnly || receiver.getType() == s.getType())
-					&& (s.params.broadcastMinSimilarity.getValue() == 0f || s.calculateSimilarity(receiver) >= s.params.broadcastMinSimilarity.getValue())
-					) {
-				return commPacket;
+
+			if (commPacket.getClass() != EnthusiasticBroadcast.class) {
+				if (distance < commPacket.range
+						&& !s.equals(receiver)
+						&& (!s.params.broadcastSameTypeOnly || receiver.getType() == s.getType())
+						&& (s.params.broadcastMinSimilarity.getValue() == 0f || s.calculateSimilarity(receiver) >= s.params.broadcastMinSimilarity.getValue())
+						) {
+					return commPacket;
+				}
+
 			}
 		}
 		return null;
@@ -88,6 +109,11 @@ public class PacketConduit implements EnvironmentMutator {
 	public static class BroadcastFoodCause extends BroadcastCause {
 		@Override
 		public String getName() { return "Broadcast Food"; }
+	}
+
+	public static class BroadcastBreedCause extends BroadcastCause {
+		@Override
+		public String getName() { return "Broadcast Breed"; }
 	}
 
 	@Override
