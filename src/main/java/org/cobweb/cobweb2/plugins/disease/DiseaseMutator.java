@@ -80,7 +80,7 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 			DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
 
 			if(agentParams.wearingPPE) {
-				setAgentState(agent, new DiseaseState(agentParams, false, false, true, simulation.getTime()));
+				setAgentState(agent, new DiseaseState(agentParams, isSick(agent), isVaccinated(agent), agentParams.vaccineEffectiveness, true, agentParams.ppeEffectiveness));
 			}
 		}
 
