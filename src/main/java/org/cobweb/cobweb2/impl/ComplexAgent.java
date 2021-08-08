@@ -16,9 +16,11 @@ import org.cobweb.cobweb2.core.LocationDirection;
 import org.cobweb.cobweb2.core.SimulationInternals;
 import org.cobweb.cobweb2.core.Topology;
 import org.cobweb.cobweb2.plugins.AgentState;
+import org.cobweb.cobweb2.plugins.broadcast.EnthusiasticBroadcast;
 import org.cobweb.cobweb2.plugins.broadcast.BroadcastPacket;
 import org.cobweb.cobweb2.plugins.broadcast.FoodBroadcast;
 import org.cobweb.cobweb2.plugins.broadcast.PacketConduit;
+import org.cobweb.cobweb2.plugins.broadcast.PacketConduit.BroadcastBreedCause;
 import org.cobweb.cobweb2.plugins.broadcast.PacketConduit.BroadcastCause;
 import org.cobweb.cobweb2.plugins.broadcast.PacketConduit.BroadcastFoodCause;
 import org.cobweb.util.RandomNoGenerator;
@@ -222,11 +224,22 @@ public class ComplexAgent extends Agent {
 		changeEnergy(-params.broadcastEnergyCost.getValue(), cause);
 	}
 
+	public void broadcastBreed() {
+
+		environment.getPlugin(PacketConduit.class).addPacketToList(new EnthusiasticBroadcast(getPosition(),this));
+
+		changeEnergy(-params.enthusiasticEnergyCost.getValue(), new BroadcastBreedCause());
+	}
+
 	/**
 	 * @return True if agent has enough energy to broadcast
 	 */
 	protected boolean canBroadcast() {
 		return params.broadcastMode && enoughEnergy(params.broadcastEnergyMin.getValue());
+	}
+
+	protected boolean canBroadcastBreed() {
+		return params.enthusiasticMode && enoughEnergy(params.breedEnergy.getValue()) && !pregnant;
 	}
 
 	/**
@@ -250,8 +263,6 @@ public class ComplexAgent extends Agent {
 			if (enoughEnergy(params.breedEnergy.getValue()))
 				caneat = false;
 		}
-
-
 		return caneat;
 	}
 
@@ -420,6 +431,17 @@ public class ComplexAgent extends Agent {
 			commPacket.process(this);
 		}
 	}
+	
+	protected void receiveBreedBroadcast() {
+		BroadcastPacket commPacket = environment.getPlugin(PacketConduit.class).findBreedPacket(getPosition(), this);
+
+		if (commPacket == null)
+			return;
+
+		if (isAgentGood(commPacket.sender)) {
+			commPacket.process(this);
+		}
+	}
 
 	public void setShouldReproduceAsex(boolean asexFlag) {
 		this.shouldReproduceAsex = asexFlag;
@@ -537,6 +559,11 @@ public class ComplexAgent extends Agent {
 		if (!enoughEnergy(params.breedEnergy.getValue())) {
 			pregnant = false;
 			breedPartner = null;
+		}
+
+		if (canBroadcastBreed()) {
+			//			broadcast(new BreedBroadcast(getPosition(), this), new BroadcastBreedCause());
+			broadcastBreed();
 		}
 
 		if (pregnant) {
@@ -690,6 +717,8 @@ public class ComplexAgent extends Agent {
 		/* Check if broadcasting is enabled */
 		if (params.broadcastMode)
 			receiveBroadcast();
+		if (params.enthusiasticMode) 
+			receiveBreedBroadcast();
 
 		if(params.agentMovementSpeed.getValue() == 1f)
 			makeAMove(); // just perform the original movement.

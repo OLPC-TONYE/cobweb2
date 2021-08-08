@@ -49,9 +49,39 @@ public class ComplexAgentParams implements ResizableParam {
 	/**
 	 * Enable aggressive mode.
 	 */
-	@ConfDisplayName("Aggressive")
+	@ConfDisplayName("Aggressive predator")
 	@ConfXMLTag("aggressiveMode")
 	public boolean aggressiveMode = false;
+
+	/**
+	 * Enable aggressive mode.
+	 */
+	@ConfDisplayName("Enthusiastic breeder")
+	@ConfXMLTag("enthusiasticMode")
+	public boolean enthusiasticMode = false;
+
+	/**
+	 * Energy used up by broadcasting.
+	 */
+	@ConfDisplayName("Enthusiastic cost")
+	@ConfXMLTag("enthusiasticEnergyCost")
+	public MutatableInt enthusiasticEnergyCost = new MutatableInt(5);
+
+	/**
+	 * Makes broadcast radius depend on agent energy.
+	 * Formula is: radius = energy / 10 + 1.
+	 */
+	@ConfDisplayName("Enthusiastic energy-based")
+	@ConfXMLTag("EnthusiasticEnergyBased")
+	public boolean enthusiasticEnergyBased = false;
+
+	/**
+	 * Radius of broadcast area.
+	 */
+	@ConfDisplayName("Enthusiastic fixed range")
+	@ConfXMLTag("EnthusiasticFixedRange")
+	public MutatableInt enthusiasticFixedRange = new MutatableInt(20);
+
 
 	/**
 	 * Amount of energy used to breed.

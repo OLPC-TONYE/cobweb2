@@ -276,5 +276,5 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 	protected boolean validState(DiseaseState value) {
 		return value != null;
 	}
-
+  
 }
