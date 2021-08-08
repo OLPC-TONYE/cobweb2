@@ -247,12 +247,12 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 
 	public void equipPPE(Agent agent) {
 		DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
-		setAgentState(agent, new DiseaseState(agentParams, isSick(agent), isVaccinated(agent), true, simulation.getTime()));
+		setAgentState(agent, new DiseaseState(agentParams, isSick(agent), isVaccinated(agent), agentParams.vaccineEffectiveness, true, agentParams.ppeEffectiveness));
 	}
 
 	public void removePPE(Agent agent) {
 		DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
-		setAgentState(agent, new DiseaseState(agentParams, isSick(agent), isVaccinated(agent), false, simulation.getTime()));
+		setAgentState(agent, new DiseaseState(agentParams, isSick(agent), isVaccinated(agent), agentParams.vaccineEffectiveness, false, agentParams.ppeEffectiveness));
 	}
 
 	@Override
