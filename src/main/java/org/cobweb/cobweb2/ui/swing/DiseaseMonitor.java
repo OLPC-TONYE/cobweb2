@@ -39,7 +39,7 @@ public class DiseaseMonitor implements UpdatableUI, ViewerPlugin{
 
 	private XYSeries agentData = new XYSeries("Healthy Agents");
 	private XYSeries infectedAgentData = new XYSeries("Infected Agents");
-	private XYSeries vaccinatedAgentData = new XYSeries("Vacinated Agents");
+	private XYSeries vaccinatedAgentData = new XYSeries("Vaccinated Agents");
 
 	private XYSeriesCollection data = new XYSeriesCollection();
 	private JFreeChart plot = ChartFactory.createXYLineChart(
@@ -115,15 +115,15 @@ public class DiseaseMonitor implements UpdatableUI, ViewerPlugin{
 		long time = statsTracker.getTime();
 		long agentCount = statsTracker.countHealthyAgents();
 		long infectedCount = statsTracker.countDiseasedAgents();
-		long vacinatedCount = statsTracker.countVaccinatedAgents();
+		long vaccinatedCount = statsTracker.countVaccinatedAgents();
 
 		agentData.add(time, agentCount);
 		infectedAgentData.add(time, infectedCount);
-		vaccinatedAgentData.add(time, vacinatedCount);
+		vaccinatedAgentData.add(time, vaccinatedCount);
 
 		healthyAgentsLabel.setText("Healthy Agents: " + agentCount);
 		infectedAgentsLabel.setText("Infected Agents: " + infectedCount);
-		vaccinatedAgentsLabel.setText("Vacinated Agents: " + vacinatedCount);
+		vaccinatedAgentsLabel.setText("Vacinated Agents: " + vaccinatedCount);
 
 		if (frame++ >= frameskip) {
 			frame = 0;
