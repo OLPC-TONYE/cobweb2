@@ -550,6 +550,7 @@ public class CobwebApplication extends JFrame {
 
 
 		viewers.add(new LiveStats(simRunner));
+		viewers.add(new DiseaseMonitor(simRunner));
 
 		if (simRunner.getSimulation().simulationConfig.geneticParams.getGeneCount() != 0) {
 			GAChartOutput gaViewer = new GAChartOutput(
