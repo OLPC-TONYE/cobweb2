@@ -74,7 +74,14 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 
 			sickCount[agent.getType()]++;
 
-			setAgentState(agent, new DiseaseState(agentParams, true, false, simulation.getTime()));
+			setAgentState(agent, new DiseaseState(agentParams, true, false, agentParams.wearingPPE, simulation.getTime()));
+		}else {
+
+			DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
+
+			if(agentParams.wearingPPE) {
+				setAgentState(agent, new DiseaseState(agentParams, isSick(agent), isVaccinated(agent), agentParams.vaccineEffectiveness, true, agentParams.ppeEffectiveness));
+			}
 		}
 
 	}
@@ -86,7 +93,7 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 		}
 		if (isVaccinated) {
 			DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
-			setAgentState(agent, new DiseaseState(agentParams, false, true, agentParams.vaccineEffectiveness));
+			setAgentState(agent, new DiseaseState(agentParams, false, true, agentParams.vaccineEffectiveness, agentParams.wearingPPE, agentParams.ppeEffectiveness));
 		}
 	}
 
@@ -103,10 +110,10 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 			sickCount[agent.getType()]++;
 
 			if (isVaccinated(agent)) {
-				setAgentState(agent, new DiseaseState(agentParams, true, true, simulation.getTime()));
+				setAgentState(agent, new DiseaseState(agentParams, true, true, agentParams.wearingPPE, simulation.getTime()));
 			}
 			else {
-				setAgentState(agent, new DiseaseState(agentParams, true, false, simulation.getTime()));
+				setAgentState(agent, new DiseaseState(agentParams, true, false, agentParams.wearingPPE, simulation.getTime()));
 			}
 		}
 	}
@@ -160,11 +167,11 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 
 		if (params.agentParams[tr].vaccinator && !isSick(bumpee) && params.agentParams[tr].canVaccinate[te]) {
 			// the effectiveness is determined by the vaccinator agent type
-			// maybe we can determine the effectiveness by the vaccinated agent types
+			// TODO: Maybe we can determine the effectiveness by the vaccinated agent types
 			vaccinate(bumpee, params.agentParams[tr].vaccineEffectiveness);
 		}
 
-		// TODO: Modify the logics here to not remove vaccination after being healed
+		// Modify the logics here to not remove vaccination after being healed
 		if (params.agentParams[tr].healer && isSick(bumpee) && params.agentParams[tr].canHeal[te]) {
 			if (simulation.getRandom().nextFloat() < params.agentParams[tr].healerEffectiveness) {
 				heal(bumpee);
@@ -172,6 +179,14 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 		}
 
 		if (!isSick(bumper))
+			return;
+
+		if(isWearingPPE(bumpee)
+				&& simulation.getRandom().nextFloat() < params.agentParams[te].ppeEffectiveness)
+			return;
+
+		if(isWearingPPE(bumper)
+				&& simulation.getRandom().nextFloat() < params.agentParams[tr].ppeEffectiveness)
 			return;
 
 		if (isVaccinated(bumpee)
@@ -199,31 +214,45 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 		return hasAgentState(agent) && getAgentState(agent).vaccinated;
 	}
 
+	public boolean isWearingPPE(Agent agent) {
+		return hasAgentState(agent) && getAgentState(agent).wearingPPE;
+	}
+
 	// This method is for vaccinators to vaccinate agents
 	public void vaccinate(Agent bumpee, float effectiveness) {
 		DiseaseAgentParams agentParams = params.agentParams[bumpee.getType()];
-		setAgentState(bumpee, new DiseaseState(agentParams, false, true, effectiveness));
+		setAgentState(bumpee, new DiseaseState(agentParams, false, false, effectiveness, isWearingPPE(bumpee), agentParams.ppeEffectiveness));
 	}
 
 	// This method is for users to specifically vaccinate an individual agent
 	public void vaccinate(Agent agent) {
 		DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
-		setAgentState(agent, new DiseaseState(agentParams, false, true, agentParams.vaccineEffectiveness));
+		setAgentState(agent, new DiseaseState(agentParams, false, false, 0.0f, isWearingPPE(agent), agentParams.ppeEffectiveness));
 	}
 
 	public void deVaccinate(Agent agent) {
 		DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
-		setAgentState(agent, new DiseaseState(agentParams, false, false, 0.0f));
+		setAgentState(agent, new DiseaseState(agentParams, false, false, 0.0f, isWearingPPE(agent), agentParams.ppeEffectiveness));
 	}
 
 	public void heal(Agent agent) {
 		if (isVaccinated(agent)) {
 			DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
-			setAgentState(agent, new DiseaseState(agentParams, false, true, agentParams.vaccineEffectiveness));
+			setAgentState(agent, new DiseaseState(agentParams, false, true, agentParams.vaccineEffectiveness, isWearingPPE(agent), agentParams.ppeEffectiveness));
 			sickCount[agent.getType()]--;
 		} else {
 			unSick(agent);
 		}
+	}
+
+	public void equipPPE(Agent agent) {
+		DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
+		setAgentState(agent, new DiseaseState(agentParams, isSick(agent), isVaccinated(agent), agentParams.vaccineEffectiveness, true, agentParams.ppeEffectiveness));
+	}
+
+	public void removePPE(Agent agent) {
+		DiseaseAgentParams agentParams = params.agentParams[agent.getType()];
+		setAgentState(agent, new DiseaseState(agentParams, isSick(agent), isVaccinated(agent), agentParams.vaccineEffectiveness, false, agentParams.ppeEffectiveness));
 	}
 
 	@Override
@@ -247,5 +276,5 @@ public class DiseaseMutator extends StatefulMutatorBase<DiseaseState> implements
 	protected boolean validState(DiseaseState value) {
 		return value != null;
 	}
-
+  
 }
